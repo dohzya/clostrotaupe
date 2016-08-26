@@ -113,7 +113,6 @@ class Game {
 
 	}
   public updatePlayerInfo(data: any) {
-    console.log("data", data)
     var playerInfoDiv = document.getElementById("playerInfo");
     var content    = document.createTextNode("Team: "+ data.team);
     playerInfoDiv.appendChild(content);
