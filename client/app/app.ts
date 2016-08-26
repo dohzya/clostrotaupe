@@ -1,4 +1,6 @@
-import rAF from "./rAF"
+import rAF from "./scripts/rAF"
+
+import Server from "./scripts/server"
 
 interface Player {
 
@@ -12,7 +14,12 @@ class App {
 
 	private init() {
 		this.gameBoard = document.getElementById("gameBoard") as HTMLCanvasElement
+
+		Server.connect();
+
 		this.newGame()
+
+
 	}
 
 	private gameBoard: HTMLCanvasElement;
