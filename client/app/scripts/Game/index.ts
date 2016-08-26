@@ -1,6 +1,8 @@
 import rAF from "../rAF"
 import Server from "../Server"
 
+const TRANSITION_LENGTH = 50;
+const TRANSITION_DURATION = 10;
 
 interface iBoard {
 	$el?: HTMLCanvasElement;
@@ -29,8 +31,9 @@ interface iCircle {
 class Game {
 
 	constructor() {
-		this.update = this.update.bind(this)
+		this.updateDisplay = this.updateDisplay.bind(this)
 		this.userInteraction = this.userInteraction.bind(this)
+		this.updateIntermediateCircle = this.updateIntermediateCircle.bind(this)
 		this.server = new Server( this );
 	}
 
@@ -38,6 +41,7 @@ class Game {
 
 	private board: iBoard;
 
+	private frameIndex: number = 0;
 
 	private fromCircle: iCircle = {
 		cx: .5,
@@ -52,6 +56,18 @@ class Game {
 	};
 
 	private toCircle: iCircle = {
+		cx: .5,
+		cy: .5,
+		cr: 0,
+		color: {
+			r: 0,
+			g: 0,
+			b: 0,
+			a: 0
+		}
+	};
+
+	private intermediateCircle: iCircle = {
 		cx: .5,
 		cy: .5,
 		cr: 0,
@@ -83,11 +99,10 @@ class Game {
 
 	public new() {
 
-
 		this.clearBoard()
+		this.updateDisplay()
 
-		this.update()
-
+		setInterval( this.updateIntermediateCircle, TRANSITION_DURATION )
 	}
 
 	public updateCirclePosition(data: any){
@@ -96,16 +111,17 @@ class Game {
 					W = this.board.width;
 		const vmin = (H > W )? W : H;
 
-		this.fromCircle = this.toCircle;
+		this.fromCircle = this.intermediateCircle;
+		this.frameIndex = 0;
 
 		this.toCircle = {
 			cx: W * data.x,
 			cy: H * data.y,
 			cr: vmin * data.size,
 			color: {
-				r: 180,
-				g: 120,
-				b: 40,
+				r: 0,
+				g: 0,
+				b: 0,
 				a: 0
 			}
 		};
@@ -117,22 +133,42 @@ class Game {
 		this.board.color.b = data.b;
 	}
 
-	private update(){
+	private updateDisplay(){
 
 		this.clearBoard()
 
-		this.fromCircle.color.a -= .01
-		this.toCircle.color.a += .01
+		this.drawCircle( this.intermediateCircle )
 
-		this.drawCircle( this.fromCircle )
-		this.drawCircle( this.toCircle )
+		rAF(this.updateDisplay)
+	}
+	private updateIntermediateCircle(){
+		if( this.frameIndex > TRANSITION_LENGTH ) return
 
-		rAF(this.update)
+	  this.frameIndex++
+
+		this.intermediateCircle = {
+			cx: ( this.toCircle.cx * this.frameIndex + this.fromCircle.cx * (TRANSITION_LENGTH - this.frameIndex) ) / TRANSITION_LENGTH,
+			cy: ( this.toCircle.cy * this.frameIndex + this.fromCircle.cy * (TRANSITION_LENGTH - this.frameIndex) ) / TRANSITION_LENGTH,
+			cr: ( this.toCircle.cr * this.frameIndex + this.fromCircle.cr * (TRANSITION_LENGTH - this.frameIndex) ) / TRANSITION_LENGTH,
+			color: {
+				r: 0,
+				g: 0,
+				b: 0,
+				a: 1
+			}
+		}
 	}
 
 	private clearBoard(){
 		const ctx = this.board.ctx;
 		ctx.clearRect(0, 0, this.board.width, this.board.height);
+
+		ctx.beginPath();
+		ctx.rect(0, 0, this.board.width, this.board.height);
+		ctx.fillStyle = `rgb( ${this.board.color.r}, ${this.board.color.g}, ${this.board.color.b})`;
+		ctx.fill();
+		ctx.closePath();
+
 	}
 
 	private drawCircle( circle: iCircle ){
@@ -143,7 +179,13 @@ class Game {
 
 		ctx.globalAlpha = 1;
 		ctx.beginPath();
-		ctx.arc( cx,  cy, cr, 0, 2 * Math.PI, false);
+
+		// FIXME : WTF ( cr < 0 ) ? 0 (negative value)
+		ctx.arc( cx,  cy, ( cr < 0 ) ? 0 : cr, 0, 2 * Math.PI, false);
+
+		ctx.lineWidth = 15;
+		ctx.strokeStyle = `rgba( 0,0,0,.5 )`;
+		ctx.stroke();
 
 		ctx.fillStyle = `rgba( ${color.r}, ${color.g}, ${color.b}, ${color.a} )`;
 		ctx.fill();
