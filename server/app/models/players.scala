@@ -4,11 +4,14 @@ import akka.actor.ActorRef
 
 sealed trait Color { def name: String }
 object Color {
-  case object Red extends Color { val name = "Red" }
-  case object Green extends Color { val name = "Green" }
-  case object Blue extends Color { val name = "Blue" }
+  case object Red extends Color { val name = "red" }
+  case object Green extends Color { val name = "green" }
+  case object Blue extends Color { val name = "blue" }
 
   def all = Seq(Red, Green, Blue)
+  def get(name: String): Option[Color] = {
+    all.find(_.name == name)
+  }
 }
 
 case class Player(
@@ -17,10 +20,10 @@ case class Player(
   color: Color
 )
 object Player {
-  def create(ref: ActorRef) = Player(
+  def create(ref: ActorRef, color: Color) = Player(
     ref = ref,
     name = genName(),
-    color = genColor()
+    color = color
   )
 
   def genName()  = "zengular-" + scala.util.Random.alphanumeric.take(5).mkString

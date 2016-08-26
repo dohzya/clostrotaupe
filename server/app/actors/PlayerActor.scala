@@ -10,11 +10,11 @@ import play.api.Logger
 import models._
 
 object PlayerActor {
-  def props(ws: ActorRef, game: ActorRef) = Props(new PlayerActor(ws, game))
+  def props(ws: ActorRef, game: ActorRef, color: Color) = Props(new PlayerActor(ws, game, color))
   val logger = Logger("application.player")
 }
 
-class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
+class PlayerActor(ws: ActorRef, game: ActorRef, color: Color) extends Actor {
   import PlayerActor.logger
 
   var lastPoint: OutEvent.Point = Gameplay.genPoint()
@@ -22,7 +22,7 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
   var player: Option[Player] = None
 
   override def preStart() {
-    game ! Connect(self)
+    game ! Connect(self, color)
   }
   override def postStop() = {
     game ! Disconnect(self)

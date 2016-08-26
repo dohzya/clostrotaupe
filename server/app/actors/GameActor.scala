@@ -25,8 +25,8 @@ class GameActor() extends Actor {
     "total" -> players.size,
     "players" -> JsArray(players.toSeq.map { case (ref, player) => Json.obj("name" -> player.name, "color" -> player.color.name)}) )
 
-  def addPlayer(ref: ActorRef) = {
-    val player = Player.create(ref)
+  def addPlayer(ref: ActorRef, color: Color) = {
+    val player = Player.create(ref, color)
     logger.info(s"Add Player $player")
     players += (ref -> player)
     player
@@ -66,7 +66,7 @@ class GameActor() extends Actor {
 
   def receive = {
     case GameInfo(p) => p.success(gameInfo)
-    case Connect(ref) => ref ! Connected(addPlayer(ref))
+    case Connect(ref, color) => ref ! Connected(addPlayer(ref, color))
     case Disconnect(ref) => removePlayer(ref)
     case TargetHit(ref, score) => targetHit(ref, score)
     case TickBg =>
@@ -77,7 +77,7 @@ class GameActor() extends Actor {
 }
 
 case class GameInfo(p: Promise[JsValue])
-case class Connect(ref: ActorRef)
+case class Connect(ref: ActorRef, color: Color)
 case class Disconnect(ref: ActorRef)
 case class Connected(player: Player)
 case class TargetHit(ref: ActorRef, score: Double)

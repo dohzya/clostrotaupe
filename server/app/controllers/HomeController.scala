@@ -22,14 +22,26 @@ class HomeController @Inject() (implicit actorSystem: ActorSystem, materializer:
   implicit val messageFlowTransformer =
     MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
 
-  def connect = WebSocket.accept[InEvent, OutEvent] { request =>
-    ActorFlow.actorRef(ws =>
-      PlayerActor.props(ws, game)
-    )
+  def connect(team: String) = WebSocket.acceptOrResult[InEvent, OutEvent] { request =>
+    Future.successful {
+      Color.get(team) match {
+      case None =>
+        Left(NotFound)
+      case Some(color) =>
+        Right(ActorFlow.actorRef(ws =>
+          PlayerActor.props(ws, game, color)
+        ))
+      }
+    }
   }
 
-  def home = Action { implicit request =>
-    Ok(views.html.index(routes.HomeController.connect.webSocketURL()))
+  def home(team: Option[String]) = Action { implicit request =>
+    team match {
+      case None =>
+        Redirect(routes.HomeController.home(Some(Player.genColor().name)))
+      case Some(team) =>
+        Ok(views.html.index(routes.HomeController.connect(team).webSocketURL))
+    }
   }
 
   def info = Action.async {
