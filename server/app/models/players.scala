@@ -24,13 +24,5 @@ object Player {
   )
 
   def genName()  = "zengular-" + scala.util.Random.alphanumeric.take(5).mkString
-  def genColor() = {
-    def chance(random: Double): Color  = {
-      if (random < 1/3) Color.Red
-      else if (random > 2/3) Color.Green
-      else Color.Blue
-    }
-
-    chance(math.random)
-  }
+  def genColor() = scala.util.Random.shuffle(Color.all).head
 }
