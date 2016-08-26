@@ -44,38 +44,23 @@ class Game {
 	private frameIndex: number = 0;
 
 	private fromCircle: iCircle = {
-		cx: .5,
-		cy: .5,
-		cr: 0,
+		cx: .5, cy: .5, cr: 0,
 		color: {
-			r: 0,
-			g: 0,
-			b: 0,
-			a: 0
+			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
 	private toCircle: iCircle = {
-		cx: .5,
-		cy: .5,
-		cr: 0,
+		cx: .5, cy: .5, cr: 0,
 		color: {
-			r: 0,
-			g: 0,
-			b: 0,
-			a: 0
+			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
 	private intermediateCircle: iCircle = {
-		cx: .5,
-		cy: .5,
-		cr: 0,
+		cx: .5, cy: .5, cr: 0,
 		color: {
-			r: 0,
-			g: 0,
-			b: 0,
-			a: 0
+			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
