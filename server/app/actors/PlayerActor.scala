@@ -32,14 +32,15 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
 
     case UpdatePoint(point) =>
       logger.info(s"Updating point coordinates: $point")
-      lastPoint = Gameplay.genNearPoint(lastPoint)
+      lastPoint = point
       ws ! lastPoint
+      context.system.scheduler.scheduleOnce(100 milliseconds, self, UpdatePoint(Gameplay.genNearPoint(lastPoint)))
 
     case InEvent.Ping(msg) =>
       logger.info(s"Received Ping($msg)")
       ws ! OutEvent.Pong("I received your message: " + msg)
       ws ! lastPoint
-      context.system.scheduler.scheduleOnce(100 milliseconds, self, UpdatePoint(Gameplay.genPoint()))
+      context.system.scheduler.scheduleOnce(100 milliseconds, self, UpdatePoint(Gameplay.genNearPoint(lastPoint)))
       ws ! OutEvent.Bg(123, 23, 345)
 
     case InEvent.Click(x, y) =>

@@ -1,5 +1,5 @@
 import rAF from "../rAF"
-import Server from "../Server"
+import Server from "../server"
 
 
 interface iBoard {
