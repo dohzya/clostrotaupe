@@ -28,6 +28,11 @@ class HomeController @Inject() (implicit actorSystem: ActorSystem, materializer:
     )
   }
 
+  val home = {
+    val asset = controllers.Assets.Asset.string2Asset("index.html")
+    controllers.Assets.versioned(path="/public", asset)
+  }
+
   def info = Action.async {
     val p = Promise[JsValue]()
     game ! GameInfo(p)
