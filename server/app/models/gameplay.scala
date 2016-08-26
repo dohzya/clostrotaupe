@@ -6,13 +6,15 @@ object Gameplay {
   def calibratePoint(point: OutEvent.Point): OutEvent.Point = {
     val x = if (point.x - point.radius < 0) point.radius else point.x
     val y = if (point.y - point.radius < 0) point.radius else point.y
-
+    val radius = if (point.radius < 0.01) 0.01 else point.radius
     //point.copy(x = x, y = y)
-    point
+    point.copy(radius = radius)
   }
 
   def genPoint(): OutEvent.Point = {
-    val radius = math.random / 10
+    val random = math.random / 10
+
+    val radius = if (random < 0.01) 0.01 else random
 
    calibratePoint(OutEvent.Point(math.random, math.random, radius))
   }
