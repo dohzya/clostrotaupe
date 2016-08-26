@@ -71,6 +71,7 @@ class Server {
 	}
 
 	public send( data: any ){
+		console.log('WebSocket — SEND : ', data)
 		this.socket.send( JSON.stringify( data ) );
 
 	}

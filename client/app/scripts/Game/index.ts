@@ -179,14 +179,25 @@ class Game {
 
 	}
 
-	public userInteraction(e: MouseEvent){
+	public userInteraction(e: any){
 		e.preventDefault();
+		if( e.clientX ){
+			this.server.send( {
+				type: "click",
+				x: e.clientX / this.board.width,
+				y: e.clientY / this.board.height
+			} )
+		}
 
-		this.server.send( {
-			type: "click",
-			x: e.clientX / this.board.width,
-			y: e.clientY / this.board.height
-		} )
+		if( e.touches ){
+			for (let i = 0; i < e.touches.length; i++) {
+				this.server.send( {
+					type: "click",
+					x: e.touches[i].clientX / this.board.width,
+					y: e.touches[i].clientY / this.board.height
+				} )
+			}
+		}
 
 	}
 
