@@ -195,6 +195,7 @@ class Game {
 	}
 
 	public userInteraction(e: MouseEvent){
+		e.preventDefault();
 
 		this.server.send( {
 			type: "click",
