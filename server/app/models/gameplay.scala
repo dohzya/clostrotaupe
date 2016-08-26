@@ -17,4 +17,19 @@ object Gameplay {
 
     hit
   }
+
+  def smallVariation(c: Double) = {
+    val random = math.random
+    val variation = if(random < 0.1) random else 1.0 - random
+
+    val result = math.abs(c + variation)
+    if (result <= 1.0) result else result - 1.0
+  }
+
+  def genNearPoint(point: OutEvent.Point): OutEvent.Point =
+    point.copy(
+      x = smallVariation(point.x),
+      y = smallVariation(point.y),
+      radius = smallVariation(point.radius))
+
 }
