@@ -1,6 +1,7 @@
 import rAF from "../rAF"
 import Server from "../Server"
 
+
 interface iBoard {
 	$el?: HTMLCanvasElement;
 	ctx?: CanvasRenderingContext2D;
@@ -20,11 +21,19 @@ class Game {
 	constructor() {
 		this.update = this.update.bind(this)
 		this.userInteraction = this.userInteraction.bind(this)
+		this.server = new Server( this );
 	}
+
+	private server: any;
 
 	private board: iBoard;
 
-	private teamCircle: iCircle;
+	private teamCircle: iCircle = {
+		cx: .5,
+		cy: .5,
+		cr: 0,
+		cc: "rgba(0,0,0,0)"
+	};
 
 	public init(){
 		const $C = document.getElementById("gameBoard") as HTMLCanvasElement
@@ -41,26 +50,32 @@ class Game {
 
 	public new() {
 
-		const ctx = this.board.ctx,
-					H = this.board.height,
-					W = this.board.width;
 
 		this.clearBoard()
 
-		const newCircle = {
-			cx: W * .5,
-			cy: H * .5,
-			cr: W * .2,
-			cc: "rgba(255,255,255,.5)"
-		};
-
-		this.teamCircle = newCircle;
 		this.update()
 
 	}
 
+	public updateCirclePosition(data: any){
+		const ctx = this.board.ctx,
+					H = this.board.height,
+					W = this.board.width;
+
+		const vmin = (H > W )? W : H;
+
+			this.teamCircle.cx = W * data.x;
+			this.teamCircle.cy = H * data.y;
+			this.teamCircle.cr = vmin * data.size;
+
+	}
+	public updateCircleColor(data: any){
+		this.teamCircle.cc = `rgba(${data.r},${data.g},${data.b}, 1)`;
+	}
+
 	private update(){
 		this.clearBoard()
+		//console.log("update", this.teamCircle)
 		this.drawCircle( this.teamCircle )
 		rAF(this.update)
 	}
@@ -87,7 +102,7 @@ class Game {
 
 	public userInteraction(e: MouseEvent){
 
-		Server.send( {
+		this.server.send( {
 			type: "click",
 			x: e.clientX / this.board.width,
 			y: e.clientY / this.board.height

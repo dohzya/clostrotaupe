@@ -1,15 +1,27 @@
+
 const CONNECTING =0,
 			OPEN =1,
 			CLOSING =2,
 			CLOSED =3;
 
+interface iListeners {
+	point?: any,
+	bg?: any
+}
+
 class Server {
 
-	constructor() {
+	constructor( game: any ) {
+		this.game = game;
 		this.init()
+
 	}
 
+	private game: any;
+
 	private socket: WebSocket;
+
+	private messageListeners: iListeners = {};
 
 	public init() {
 		this.connect()
@@ -41,9 +53,31 @@ class Server {
 
 		ws.onmessage = (e: any) => {
 			console.info('WebSocket — Message : ', this.jsonParse(e.data) );
+
+			const data = this.jsonParse(e.data);
+
+			switch( data.type ){
+				case "point":
+					this.game.updateCirclePosition(data)
+					break;
+				case "bg":
+					this.game.updateCircleColor(data)
+					break;
+			}
+
+			// if( this.messageListeners.hasOwnProperty(data.type) ) {
+			// 	this.messageListeners[ (data.type as string)]( data )
+			// }
 		};
 
 	}
+
+	// public onMessage( listenerName: string, listenerCallback: any ){
+	// 	if( ! this.messageListeners.hasOwnProperty( listenerName ) ) {
+	// 		this.messageListeners[ listenerName ] = listenerCallback
+	// 	}
+	//
+	// }
 
 	public send( data: any ){
 		this.socket.send( JSON.stringify( data ) );
@@ -58,6 +92,9 @@ class Server {
     }
 	}
 
+
+
+
 }
 
-export default new Server
+export default Server
