@@ -4,6 +4,12 @@ const CONNECTING =0,
 			CLOSING =2,
 			CLOSED =3;
 
+if( ! (window as any).clostrotaupe) {
+	window['clostrotaupe'] = {
+		wsURL: "ws://localhost:9000/ws"
+	}
+}
+
 interface iListeners {
 	point?: any,
 	bg?: any
