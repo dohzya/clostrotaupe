@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "jsx": "react",
+    "module": "commonjs",
+    "sourceMap": false,
+    "noImplicitAny": true
+  },
+  "compileOnSave": false,
+  "atom": {
+    "rewriteTsconfig": true
+  },
+  "filesGlob": [
+    "app/**/*.ts",
+    "typings/**/*.d.ts"
+  ],
+  "files": [
+    "app/app.ts"
+  ]
+}
