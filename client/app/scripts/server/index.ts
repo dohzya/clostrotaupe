@@ -52,7 +52,6 @@ class Server {
 		};
 
 		ws.onmessage = (e: any) => {
-			console.info('WebSocket — Message : ', this.jsonParse(e.data) );
 
 			const data = this.jsonParse(e.data);
 
@@ -63,21 +62,13 @@ class Server {
 				case "bg":
 					this.game.updateCircleColor(data)
 					break;
+				default:
+					console.info('WebSocket — Unknown message : ', this.jsonParse(e.data) );
 			}
 
-			// if( this.messageListeners.hasOwnProperty(data.type) ) {
-			// 	this.messageListeners[ (data.type as string)]( data )
-			// }
 		};
 
 	}
-
-	// public onMessage( listenerName: string, listenerCallback: any ){
-	// 	if( ! this.messageListeners.hasOwnProperty( listenerName ) ) {
-	// 		this.messageListeners[ listenerName ] = listenerCallback
-	// 	}
-	//
-	// }
 
 	public send( data: any ){
 		this.socket.send( JSON.stringify( data ) );

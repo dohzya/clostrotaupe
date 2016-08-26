@@ -13,7 +13,11 @@ interface iCircle {
 	cx: number,
 	cy: number,
 	cr: number,
-	cc: string
+	color: {
+		r: number,
+		g: number,
+		b: number
+	}
 }
 
 class Game {
@@ -32,7 +36,11 @@ class Game {
 		cx: .5,
 		cy: .5,
 		cr: 0,
-		cc: "rgba(0,0,0,0)"
+		color: {
+			r: 0,
+			g: 0,
+			b: 0
+		}
 	};
 
 	public init(){
@@ -70,7 +78,9 @@ class Game {
 
 	}
 	public updateCircleColor(data: any){
-		this.teamCircle.cc = `rgba(${data.r},${data.g},${data.b}, 1)`;
+		this.teamCircle.color.r = data.r;
+		this.teamCircle.color.g = data.g;
+		this.teamCircle.color.b = data.b;
 	}
 
 	private update(){
@@ -86,14 +96,14 @@ class Game {
 	}
 
 	private drawCircle( circle: iCircle ){
-		const {cx, cy, cr, cc} = circle;
+		const {cx, cy, cr, color} = circle;
 		const ctx = this.board.ctx;
 
 		ctx.globalAlpha = 1;
 		ctx.beginPath();
 		ctx.arc( cx,  cy, cr, 0, 2 * Math.PI, false);
 
-		ctx.fillStyle = cc;
+		ctx.fillStyle = `rgb( ${color.r}, ${color.g}, ${color.b} )`;
 		ctx.fill();
 
 		ctx.closePath();
