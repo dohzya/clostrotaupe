@@ -19,6 +19,8 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
 
   var lastPoint: OutEvent.Point = Gameplay.genPoint()
 
+  var player: Option[Player] = None
+
   override def preStart() {
     game ! Connect(self)
   }
@@ -28,6 +30,7 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
 
   def receive = {
     case Connected(player) =>
+      this.player = Some(player)
       logger.info(s"Received player info: $player")
 
     case UpdatePoint() =>
@@ -42,7 +45,7 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
       ws ! OutEvent.Pong("I received your message: " + msg)
       ws ! lastPoint
       context.system.scheduler.scheduleOnce(100 milliseconds, self, UpdatePoint())
-      ws ! OutEvent.Bg(123, 23, 345)
+      ws ! player.map(player => OutEvent.PlayerInfo(player.name, player.color.name)).getOrElse(sys.error("Player not initialized"))
 
     case InEvent.Click(x, y) =>
       logger.info(s"Received Click($x, $y)")

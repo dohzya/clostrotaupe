@@ -22,10 +22,12 @@ object OutEvent {
   case class Pong(msg: String) extends OutEvent
   case class Point(x: Double, y: Double, radius: Double) extends OutEvent
   case class Bg(r: Int, g: Int, b: Int) extends OutEvent
+  case class PlayerInfo(name: String, team: String) extends OutEvent
 
   implicit val jsonWrites = Writes[OutEvent] {
     case Pong(msg) => Json.obj("type" -> "pong", "msg" -> msg)
     case Point(x, y, radius) => Json.obj("type" -> "point", "x" -> x, "y" -> y, "size" -> radius)
     case Bg(r, g, b) => Json.obj("type" -> "bg", "r" -> r, "g" -> g, "b" -> b)
+    case PlayerInfo(name, team) => Json.obj("type" -> "playerInfo", "name" -> name, "team" -> team)
   }
 }

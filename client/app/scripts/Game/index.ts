@@ -44,38 +44,23 @@ class Game {
 	private frameIndex: number = 0;
 
 	private fromCircle: iCircle = {
-		cx: .5,
-		cy: .5,
-		cr: 0,
+		cx: .5, cy: .5, cr: 0,
 		color: {
-			r: 0,
-			g: 0,
-			b: 0,
-			a: 0
+			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
 	private toCircle: iCircle = {
-		cx: .5,
-		cy: .5,
-		cr: 0,
+		cx: .5, cy: .5, cr: 0,
 		color: {
-			r: 0,
-			g: 0,
-			b: 0,
-			a: 0
+			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
 	private intermediateCircle: iCircle = {
-		cx: .5,
-		cy: .5,
-		cr: 0,
+		cx: .5, cy: .5, cr: 0,
 		color: {
-			r: 0,
-			g: 0,
-			b: 0,
-			a: 0
+			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
@@ -127,6 +112,13 @@ class Game {
 		};
 
 	}
+  public updatePlayerInfo(data: any) {
+    console.log("data", data)
+    var playerInfoDiv = document.getElementById("playerInfo");
+    var content    = document.createTextNode("Team: "+ data.team);
+    playerInfoDiv.appendChild(content);
+  }
+
 	public updateBGColor(data: any){
 		this.board.color.r =  data.r;
 		this.board.color.g = data.g;
@@ -194,13 +186,25 @@ class Game {
 
 	}
 
-	public userInteraction(e: MouseEvent){
+	public userInteraction(e: any){
+		e.preventDefault();
+		if( e.clientX ){
+			this.server.send( {
+				type: "click",
+				x: e.clientX / this.board.width,
+				y: e.clientY / this.board.height
+			} )
+		}
 
-		this.server.send( {
-			type: "click",
-			x: e.clientX / this.board.width,
-			y: e.clientY / this.board.height
-		} )
+		if( e.touches ){
+			for (let i = 0; i < e.touches.length; i++) {
+				this.server.send( {
+					type: "click",
+					x: e.touches[i].clientX / this.board.width,
+					y: e.touches[i].clientY / this.board.height
+				} )
+			}
+		}
 
 	}
 
