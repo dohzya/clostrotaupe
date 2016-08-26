@@ -18,7 +18,9 @@ class GameActor() extends Actor {
 
   val players = scala.collection.mutable.Map.empty[ActorRef, Player]
 
-  def gameInfo: JsValue = Json.obj("players" -> players.size)
+  def gameInfo: JsValue = Json.obj(
+    "total" -> players.size,
+    "players" -> JsArray(players.toSeq.map { case (ref, player) => Json.obj("name" -> player.name, "color" -> player.color.name)}) )
 
   def addPlayer(ref: ActorRef) = {
     val player = Player.create(ref)
