@@ -16,7 +16,8 @@
   ],
   "files": [
     "app/app.ts",
+    "app/scripts/Game/index.ts",
     "app/scripts/rAF/index.ts",
-    "app/scripts/server/index.ts"
+    "app/scripts/Server/index.ts"
   ]
 }

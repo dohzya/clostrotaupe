@@ -7,7 +7,9 @@ class Server {
 	private socket: WebSocket;
 
 	private connect() {
+
 		const ws = this.socket = new WebSocket("ws://localhost:9000/ws");
+
 		ws.onopen = function () {
 	  	ws.send('{"type":"ping","msg":"coucou"}');
 		};
@@ -18,6 +20,7 @@ class Server {
 		  console.info('Server: ', e.data);
 		};
 	}
+
 }
 
-export = new Server
+export default new Server
