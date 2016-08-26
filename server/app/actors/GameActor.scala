@@ -6,6 +6,8 @@ import play.api.Logger
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import models._
+
 object GameActor {
   def props() = Props(new GameActor())
   val logger = Logger("application.player")
@@ -14,13 +16,15 @@ object GameActor {
 class GameActor() extends Actor {
   import GameActor.logger
 
-  val players = scala.collection.mutable.Set.empty[ActorRef]
+  val players = scala.collection.mutable.Map.empty[ActorRef, Player]
 
   def gameInfo: JsValue = Json.obj("players" -> players.size)
 
-  def addPlayer(player: ActorRef) = {
-    logger.info("Add Player")
-    players += player
+  def addPlayer(ref: ActorRef) = {
+    val player = Player.create(ref)
+    logger.info(s"Add Player $player")
+    players += (ref -> player)
+    player
   }
   def removePlayer(player: ActorRef) = {
     logger.info("Remove Player")
@@ -29,7 +33,7 @@ class GameActor() extends Actor {
 
   def receive = {
     case GameInfo(p) => p.success(gameInfo)
-    case Connect(player) => addPlayer(player)
+    case Connect(ref) => ref ! Connected(addPlayer(ref))
     case Disconnect(player) => removePlayer(player)
   }
 
@@ -38,3 +42,4 @@ class GameActor() extends Actor {
 case class GameInfo(p: Promise[JsValue])
 case class Connect(ws: ActorRef)
 case class Disconnect(ws: ActorRef)
+case class Connected(color: Player)
