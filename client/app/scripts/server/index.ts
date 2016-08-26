@@ -60,7 +60,7 @@ class Server {
 					this.game.updateCirclePosition(data)
 					break;
 				case "bg":
-					this.game.updateCircleColor(data)
+					this.game.updateBGColor(data)
 					break;
 				default:
 					console.info('WebSocket — Unknown message : ', this.jsonParse(e.data) );

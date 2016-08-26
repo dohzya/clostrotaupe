@@ -7,6 +7,11 @@ interface iBoard {
 	ctx?: CanvasRenderingContext2D;
 	height: number;
 	width: number;
+	color: {
+		r: number,
+		g: number,
+		b: number
+	}
 }
 
 interface iCircle {
@@ -16,7 +21,8 @@ interface iCircle {
 	color: {
 		r: number,
 		g: number,
-		b: number
+		b: number,
+		a: number
 	}
 }
 
@@ -32,14 +38,28 @@ class Game {
 
 	private board: iBoard;
 
-	private teamCircle: iCircle = {
+
+	private fromCircle: iCircle = {
 		cx: .5,
 		cy: .5,
 		cr: 0,
 		color: {
 			r: 0,
 			g: 0,
-			b: 0
+			b: 0,
+			a: 0
+		}
+	};
+
+	private toCircle: iCircle = {
+		cx: .5,
+		cy: .5,
+		cr: 0,
+		color: {
+			r: 0,
+			g: 0,
+			b: 0,
+			a: 0
 		}
 	};
 
@@ -50,7 +70,12 @@ class Game {
 			$el: $C,
 			ctx: $C.getContext("2d"),
 			height: $C.height = window.innerHeight,
-			width: $C.width = window.innerWidth
+			width: $C.width = window.innerWidth,
+			color: {
+				r: 0,
+				g: 0,
+				b: 0
+			}
 		}
 
 		this.new();
@@ -69,24 +94,39 @@ class Game {
 		const ctx = this.board.ctx,
 					H = this.board.height,
 					W = this.board.width;
-
 		const vmin = (H > W )? W : H;
 
-			this.teamCircle.cx = W * data.x;
-			this.teamCircle.cy = H * data.y;
-			this.teamCircle.cr = vmin * data.size;
+		this.fromCircle = this.toCircle;
+
+		this.toCircle = {
+			cx: W * data.x,
+			cy: H * data.y,
+			cr: vmin * data.size,
+			color: {
+				r: 180,
+				g: 120,
+				b: 40,
+				a: 0
+			}
+		};
 
 	}
-	public updateCircleColor(data: any){
-		this.teamCircle.color.r = data.r;
-		this.teamCircle.color.g = data.g;
-		this.teamCircle.color.b = data.b;
+	public updateBGColor(data: any){
+		this.board.color.r = data.r;
+		this.board.color.g = data.g;
+		this.board.color.b = data.b;
 	}
 
 	private update(){
+
 		this.clearBoard()
-		//console.log("update", this.teamCircle)
-		this.drawCircle( this.teamCircle )
+
+		this.fromCircle.color.a -= .01
+		this.toCircle.color.a += .01
+
+		this.drawCircle( this.fromCircle )
+		this.drawCircle( this.toCircle )
+
 		rAF(this.update)
 	}
 
@@ -96,6 +136,8 @@ class Game {
 	}
 
 	private drawCircle( circle: iCircle ){
+		if( ! circle.color.a ) return;
+
 		const {cx, cy, cr, color} = circle;
 		const ctx = this.board.ctx;
 
@@ -103,7 +145,7 @@ class Game {
 		ctx.beginPath();
 		ctx.arc( cx,  cy, cr, 0, 2 * Math.PI, false);
 
-		ctx.fillStyle = `rgb( ${color.r}, ${color.g}, ${color.b} )`;
+		ctx.fillStyle = `rgba( ${color.r}, ${color.g}, ${color.b}, ${color.a} )`;
 		ctx.fill();
 
 		ctx.closePath();
