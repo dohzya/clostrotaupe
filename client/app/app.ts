@@ -14,6 +14,7 @@ class App {
 	}
 
 	private init() {
+		Server.init()
 		Game.new()
 	}
 

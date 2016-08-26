@@ -1,10 +1,15 @@
 class Server {
 
 	constructor() {
+		console.log('Server')
 		this.connect()
 	}
 
 	private socket: WebSocket;
+
+	public init() {
+		this.connect()
+	}
 
 	private connect() {
 
@@ -12,12 +17,13 @@ class Server {
 
 		ws.onopen = function () {
 	  	ws.send('{"type":"ping","msg":"coucou"}');
+			console.log('WebSocket — Opening')
 		};
 		ws.onerror = function (error: any) {
-		  console.error('WebSocket Error ', error);
+		  console.error('WebSocket — Error :', error);
 		};
 		ws.onmessage = function (e: any) {
-		  console.info('Server: ', e.data);
+		  console.info('WebSocket — Message : ', e.data);
 		};
 	}
 
