@@ -51,14 +51,14 @@ class Game {
 	};
 
 	private toCircle: iCircle = {
-		cx: .5, cy: .5, cr: 0,
+		cx: .5, cy: .5, cr: .5,
 		color: {
 			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
 	private intermediateCircle: iCircle = {
-		cx: .5, cy: .5, cr: 0,
+		cx: .5, cy: .5, cr: .5,
 		color: {
 			r: 0, g: 0, b: 0, a: 0
 		}
