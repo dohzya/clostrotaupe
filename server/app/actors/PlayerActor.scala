@@ -14,6 +14,8 @@ object PlayerActor {
 class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
   import PlayerActor.logger
 
+  var lastPoint: OutEvent.Point = Gameplay.genPoint()
+
   override def preStart() {
     game ! Connect(self)
   }
@@ -28,12 +30,17 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
     case InEvent.Ping(msg) =>
       logger.info(s"Received Ping($msg)")
       ws ! OutEvent.Pong("I received your message: " + msg)
-      ws ! Gameplay.genPoint()
+      ws ! lastPoint
       ws ! OutEvent.Bg(123, 23, 345)
 
     case InEvent.Click(x, y) =>
       logger.info(s"Received Click($x, $y)")
-      ws ! Gameplay.genPoint
+      val hit = Gameplay.checkHit(lastPoint, x, y)
+      hit.map { score =>
+        game ! TargetHit(self, score)
+      }
+      lastPoint = Gameplay.genPoint()
+      ws ! lastPoint
 
 
     case err =>
