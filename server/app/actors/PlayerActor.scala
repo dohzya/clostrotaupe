@@ -26,6 +26,9 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
       logger.info(s"Received Ping($msg)")
       ws ! OutEvent.Pong("I received your message: " + msg)
 
+    case Connected(player) =>
+      logger.info(s"Received player info: $player")
+
     case err =>
       logger.warn(s"Received invalid message: $err")
   }
