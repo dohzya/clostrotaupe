@@ -81,5 +81,5 @@ case class Connect(ref: ActorRef)
 case class Disconnect(ref: ActorRef)
 case class Connected(player: Player)
 case class TargetHit(ref: ActorRef, score: Double)
-case class UpdatePoint(point: OutEvent.Point)
+case class UpdatePoint()
 case object TickBg
