@@ -3,7 +3,7 @@ package models
 import akka.actor._
 
 object Gameplay {
-  def genPoint(): OutEvent.Point = OutEvent.Point(math.random, math.random, math.random)
+  def genPoint(): OutEvent.Point = OutEvent.Point(math.random, math.random, math.random / 10)
 
   def checkHit(point: OutEvent.Point, x: Double, y: Double): Option[Double] = {
     val xDiff = point.x - x
@@ -19,11 +19,14 @@ object Gameplay {
   }
 
   def smallVariation(c: Double) = {
-    val random = math.random
-    val variation = if(random < 0.1) random else 1.0 - random
+    val sign = if (math.random < 0.5) -1 else 1
+    val variation = math.random / 100 * sign
 
-    val result = math.abs(c + variation)
-    if (result <= 1.0) result else result - 1.0
+    val result = c + variation
+
+    if (result > 1.0) c + variation * sign
+    else if (result < 0) c + variation * sign
+    else result
   }
 
   def genNearPoint(point: OutEvent.Point): OutEvent.Point =

@@ -1,5 +1,5 @@
 import rAF from "../rAF"
-import Server from "../Server"
+import Server from "../server"
 
 const TRANSITION_LENGTH = 50;
 const TRANSITION_DURATION = 10;
