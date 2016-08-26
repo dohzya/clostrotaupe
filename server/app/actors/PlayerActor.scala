@@ -52,6 +52,8 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
       lastPoint = Gameplay.genPoint()
       ws ! lastPoint
 
+    case bg: OutEvent.Bg =>
+      ws ! bg
 
     case err =>
       logger.warn(s"Received invalid message: $err")

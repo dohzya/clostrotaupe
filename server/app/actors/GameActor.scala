@@ -5,6 +5,7 @@ import play.api.libs.json._
 import play.api.Logger
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 import models._
 
@@ -41,11 +42,36 @@ class GameActor() extends Actor {
     colors += (player.color -> (currentColorScore + score))
   }
 
+  def sendBg() = {
+    def calcColorValue(color: Color, totalScore: Double): Int = {
+      val colorScore = colors.getOrElse(color, sys.error(s"Unknown player color ${color}"))
+      val res = colorScore / totalScore * 255
+      res.toInt
+    }
+    val totalScore = colors.values.foldLeft(0d)((acc, score) => acc + score)
+
+    val bg = OutEvent.Bg(
+      r = calcColorValue(Color.Red, totalScore),
+      g = calcColorValue(Color.Green, totalScore),
+      b = calcColorValue(Color.Blue, totalScore)
+    )
+    players.keys.map { ref =>
+      ref ! bg
+    }
+  }
+
+  override def preStart() {
+    self ! TickBg
+  }
+
   def receive = {
     case GameInfo(p) => p.success(gameInfo)
     case Connect(ref) => ref ! Connected(addPlayer(ref))
     case Disconnect(ref) => removePlayer(ref)
     case TargetHit(ref, score) => targetHit(ref, score)
+    case TickBg =>
+      sendBg()
+      context.system.scheduler.scheduleOnce(100 milliseconds, self, TickBg)
   }
 
 }
@@ -56,3 +82,4 @@ case class Disconnect(ref: ActorRef)
 case class Connected(player: Player)
 case class TargetHit(ref: ActorRef, score: Double)
 case class UpdatePoint(point: OutEvent.Point)
+case object TickBg
