@@ -28,11 +28,13 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
     case InEvent.Ping(msg) =>
       logger.info(s"Received Ping($msg)")
       ws ! OutEvent.Pong("I received your message: " + msg)
-      ws ! OutEvent.Point(0.33333, 0.33333, 0.5)
+      ws ! Gameplay.genPoint()
       ws ! OutEvent.Bg(123, 23, 345)
 
     case InEvent.Click(x, y) =>
       logger.info(s"Received Click($x, $y)")
+      ws ! Gameplay.genPoint
+
 
     case err =>
       logger.warn(s"Received invalid message: $err")
