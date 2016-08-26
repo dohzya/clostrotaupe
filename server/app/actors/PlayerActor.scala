@@ -46,7 +46,7 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
       logger.info(s"Received Click($x, $y)")
       val isHit = Gameplay.checkHit(lastPoint, x, y)
       isHit.map { hit =>
-        val score = scala.math.pow(lastPoint.radius, 2.0) - hit
+        val score = Gameplay.calculateScoreFromHit(lastPoint, hit)
         game ! TargetHit(self, score)
       }
       lastPoint = Gameplay.genPoint()

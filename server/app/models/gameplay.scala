@@ -32,4 +32,5 @@ object Gameplay {
       y = smallVariation(point.y),
       radius = smallVariation(point.radius))
 
+  def calculateScoreFromHit(point: OutEvent.Point, hit: Double): Double = scala.math.pow(point.radius, 2.0) - hit
 }
