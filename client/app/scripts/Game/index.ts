@@ -18,8 +18,8 @@ interface iCircle {
 class Game {
 
 	constructor() {
-		Server.init()
 		this.update = this.update.bind(this)
+		this.userInteraction = this.userInteraction.bind(this)
 	}
 
 	private board: iBoard;
@@ -82,6 +82,16 @@ class Game {
 		ctx.fill();
 
 		ctx.closePath();
+
+	}
+
+	public userInteraction(e: MouseEvent){
+
+		Server.send( {
+			type: "click",
+			x: e.clientX / this.board.width,
+			y: e.clientY / this.board.height
+		} )
 
 	}
 

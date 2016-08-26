@@ -13,6 +13,7 @@ class App {
 
 	private init() {
 		Game.init()
+		document.addEventListener("click", Game.userInteraction )
 	}
 
 	private gamePlayers: Array<Player>

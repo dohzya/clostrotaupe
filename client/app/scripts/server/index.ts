@@ -1,7 +1,12 @@
+const CONNECTING =0,
+			OPEN =1,
+			CLOSING =2,
+			CLOSED =3;
+
 class Server {
 
 	constructor() {
-		this.connect()
+		this.init()
 	}
 
 	private socket: WebSocket;
@@ -11,25 +16,37 @@ class Server {
 	}
 
 	private connect() {
-
 		this.socket = new WebSocket("ws://localhost:9000/ws");
 		this.handleWSEvents( this.socket )
-		
 	}
 
 	private handleWSEvents( ws: WebSocket ){
-		ws.onopen = function () {
-			ws.send('{"type":"ping","msg":"coucou"}');
+		ws.onopen = () => {
+
+			this.send( {
+				"type":"ping",
+				"msg":"connected"
+			} );
+
 			console.log('WebSocket — Opening')
 		};
 
-		ws.onerror = function (error: any) {
+		ws.onerror = (error: any) => {
 			console.error('WebSocket — Error :', error);
 		};
 
-		ws.onmessage = function (e: any) {
-			console.info('WebSocket — Message : ', e.data);
+		ws.onclose = (error: any) => {
+			console.error('WebSocket — Close :', error);
 		};
+
+		ws.onmessage = (e: any) => {
+			console.info('WebSocket — Message : ', this.jsonParse(e.data) );
+		};
+
+	}
+
+	public send( data: any ){
+		this.socket.send( JSON.stringify( data ) );
 
 	}
 
