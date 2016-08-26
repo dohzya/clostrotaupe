@@ -26,8 +26,6 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
     game ! Disconnect(self)
   }
 
-  def genNearPoint() = Gameplay.genNearPoint(lastPoint)
-
   def receive = {
     case Connected(player) =>
       logger.info(s"Received player info: $player")
