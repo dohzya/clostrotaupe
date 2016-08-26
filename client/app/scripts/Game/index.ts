@@ -1,40 +1,87 @@
+import rAF from "../rAF"
+import Server from "../Server"
+
+interface iBoard {
+	$el?: HTMLCanvasElement;
+	ctx?: CanvasRenderingContext2D;
+	height: number;
+	width: number;
+}
+
+interface iCircle {
+	cx: number,
+	cy: number,
+	cr: number,
+	cc: string
+}
+
 class Game {
 
 	constructor() {
-		document.addEventListener("DOMContentLoaded", this.init.bind(this) )
+		Server.init()
+		this.update = this.update.bind(this)
 	}
+
+	private board: iBoard;
+
+	private teamCircle: iCircle;
 
 	public init(){
-		this.gameBoard = document.getElementById("gameBoard") as HTMLCanvasElement
+		const $C = document.getElementById("gameBoard") as HTMLCanvasElement
 
-	}
-	private gameBoard: HTMLCanvasElement;
-
-	public new() {
-		if( !this.gameBoard ){
-			document.addEventListener("DOMContentLoaded", this.new.bind(this) )
-			return;
+		this.board = {
+			$el: $C,
+			ctx: $C.getContext("2d"),
+			height: $C.height = window.innerHeight,
+			width: $C.width = window.innerWidth
 		}
 
-		const ctx = this.gameBoard.getContext("2d"),
-					H = this.gameBoard.height = window.innerHeight,
-					W = this.gameBoard.width  = window.innerWidth;
+		this.new();
+	}
 
-					ctx.globalAlpha = 1;
-					ctx.beginPath();
-					ctx.arc( W / 2,  H / 2, W / 10, 0, 2 * Math.PI, false);
+	public new() {
 
-					ctx.strokeStyle = "white";
-					ctx.lineWidth = 1;
-					ctx.stroke();
+		const ctx = this.board.ctx,
+					H = this.board.height,
+					W = this.board.width;
 
-					ctx.fillStyle = "rgba(255,255,255,.5)";
-					ctx.fill();
+		this.clearBoard()
 
-					ctx.closePath();
-					ctx.globalAlpha = 1;
+		const newCircle = {
+			cx: W * .5,
+			cy: H * .5,
+			cr: W * .2,
+			cc: "rgba(255,255,255,.5)"
+		};
 
-	//		ctx.clearRect(0, 0, W, H);
+		this.teamCircle = newCircle;
+		this.update()
+
+	}
+
+	private update(){
+		this.clearBoard()
+		this.drawCircle( this.teamCircle )
+		rAF(this.update)
+	}
+
+	private clearBoard(){
+		const ctx = this.board.ctx;
+		ctx.clearRect(0, 0, this.board.width, this.board.height);
+	}
+
+	private drawCircle( circle: iCircle ){
+		const {cx, cy, cr, cc} = circle;
+		const ctx = this.board.ctx;
+
+		ctx.globalAlpha = 1;
+		ctx.beginPath();
+		ctx.arc( cx,  cy, cr, 0, 2 * Math.PI, false);
+
+		ctx.fillStyle = cc;
+		ctx.fill();
+
+		ctx.closePath();
 
 	}
 
