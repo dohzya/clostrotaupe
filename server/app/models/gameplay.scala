@@ -4,13 +4,18 @@ import akka.actor._
 
 object Gameplay {
   def calibratePoint(point: OutEvent.Point): OutEvent.Point = {
-    val x = if (point.radius - point.x < 0) point.radius else point.x
-    val y = if (point.radius - point.y < 0) point.radius else point.y
+    val x = if (point.x - point.radius < 0) point.radius else point.x
+    val y = if (point.y - point.radius < 0) point.radius else point.y
 
-    point.copy(x = x, y = y)
+    //point.copy(x = x, y = y)
+    point
   }
 
-  def genPoint(): OutEvent.Point = calibratePoint(OutEvent.Point(math.random, math.random, math.random / 10))
+  def genPoint(): OutEvent.Point = {
+    val radius = math.random / 10
+
+   calibratePoint(OutEvent.Point(math.random, math.random, radius))
+  }
 
   def checkHit(point: OutEvent.Point, x: Double, y: Double): Option[Double] = {
     val xDiff = point.x - x

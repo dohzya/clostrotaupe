@@ -51,14 +51,14 @@ class Game {
 	};
 
 	private toCircle: iCircle = {
-		cx: .5, cy: .5, cr: 0,
+		cx: .5, cy: .5, cr: .5,
 		color: {
 			r: 0, g: 0, b: 0, a: 0
 		}
 	};
 
 	private intermediateCircle: iCircle = {
-		cx: .5, cy: .5, cr: 0,
+		cx: .5, cy: .5, cr: .5,
 		color: {
 			r: 0, g: 0, b: 0, a: 0
 		}
@@ -113,7 +113,6 @@ class Game {
 
 	}
   public updatePlayerInfo(data: any) {
-    console.log("data", data)
     var playerInfoDiv = document.getElementById("playerInfo");
     var content    = document.createTextNode("Team: "+ data.team);
     playerInfoDiv.appendChild(content);
@@ -138,6 +137,8 @@ class Game {
 
 	  this.frameIndex++
 
+		const alpha = ( this.frameIndex < TRANSITION_LENGTH * 1/8 || this.frameIndex > TRANSITION_LENGTH * 7/8)? .9 : 1;
+
 		this.intermediateCircle = {
 			cx: ( this.toCircle.cx * this.frameIndex + this.fromCircle.cx * (TRANSITION_LENGTH - this.frameIndex) ) / TRANSITION_LENGTH,
 			cy: ( this.toCircle.cy * this.frameIndex + this.fromCircle.cy * (TRANSITION_LENGTH - this.frameIndex) ) / TRANSITION_LENGTH,
@@ -146,7 +147,7 @@ class Game {
 				r: 0,
 				g: 0,
 				b: 0,
-				a: 1
+				a: alpha
 			}
 		}
 	}
