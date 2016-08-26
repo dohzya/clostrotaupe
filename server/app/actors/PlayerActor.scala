@@ -50,9 +50,9 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
       isHit.map { hit =>
         val score = Gameplay.calculateScoreFromHit(lastPoint, hit)
         game ! TargetHit(self, score)
+        lastPoint = Gameplay.genPoint()
+        ws ! lastPoint
       }
-      lastPoint = Gameplay.genPoint()
-      ws ! lastPoint
 
     case bg: OutEvent.Bg =>
       ws ! bg
