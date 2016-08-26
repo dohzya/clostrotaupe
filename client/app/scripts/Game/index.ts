@@ -112,6 +112,12 @@ class Game {
 		};
 
 	}
+  public updatePlayerInfo(data: any) {
+    const ctx = this.board.ctx;
+    ctx.font = "30px Arial";
+    ctx.fillText(data.name,10,50);
+  }
+
 	public updateBGColor(data: any){
 		this.board.color.r =  data.r;
 		this.board.color.g = data.g;

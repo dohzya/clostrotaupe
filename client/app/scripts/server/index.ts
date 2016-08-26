@@ -62,6 +62,9 @@ class Server {
 				case "bg":
 					this.game.updateBGColor(data)
 					break;
+        case "playerInfo":
+          this.game.updatePlayerInfo(data)
+          break;
 				default:
 					console.info('WebSocket — Unknown message : ', this.jsonParse(e.data) );
 			}
