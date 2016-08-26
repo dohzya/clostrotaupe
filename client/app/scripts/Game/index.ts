@@ -128,7 +128,7 @@ class Game {
 
 	}
 	public updateBGColor(data: any){
-		this.board.color.r = data.r;
+		this.board.color.r =  data.r;
 		this.board.color.g = data.g;
 		this.board.color.b = data.b;
 	}
@@ -184,7 +184,7 @@ class Game {
 		ctx.arc( cx,  cy, ( cr < 0 ) ? 0 : cr, 0, 2 * Math.PI, false);
 
 		ctx.lineWidth = 15;
-		ctx.strokeStyle = `rgba( 0,0,0,.5 )`;
+		ctx.strokeStyle = `rgba( 200,200,200,.5 )`;
 		ctx.stroke();
 
 		ctx.fillStyle = `rgba( ${color.r}, ${color.g}, ${color.b}, ${color.a} )`;
