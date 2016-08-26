@@ -1,6 +1,4 @@
-import rAF from "./scripts/rAF"
 
-import Server from "./scripts/Server"
 import Game from "./scripts/Game"
 
 interface Player {
@@ -10,12 +8,11 @@ interface Player {
 class App {
 
 	constructor() {
-		this.init()
+		document.addEventListener("DOMContentLoaded", this.init.bind(this) )
 	}
 
 	private init() {
-		Server.init()
-		Game.new()
+		Game.init()
 	}
 
 	private gamePlayers: Array<Player>
