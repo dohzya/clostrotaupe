@@ -18,7 +18,7 @@ class GameActor() extends Actor {
 
   val players = scala.collection.mutable.Map.empty[ActorRef, Player]
 
-  val colors = scala.collection.mutable.Map(Color.all.map(_ -> 0): _*)
+  val colors = scala.collection.mutable.Map[Color, Double](Color.all.map(_ -> 0d): _*)
 
   def gameInfo: JsValue = Json.obj(
     "total" -> players.size,
@@ -30,20 +30,28 @@ class GameActor() extends Actor {
     players += (ref -> player)
     player
   }
-  def removePlayer(player: ActorRef) = {
+  def removePlayer(ref: ActorRef) = {
     logger.info("Remove Player")
-    players -= player
+    players -= ref
+  }
+
+  def targetHit(ref: ActorRef, score: Double) = {
+    val player = players.getOrElse(ref, sys.error(s"Unknown player for actor ref $ref"))
+    val currentColorScore = colors.getOrElse(player.color, sys.error(s"Unknown player color ${player.color}"))
+    colors += (player.color -> (currentColorScore + score))
   }
 
   def receive = {
     case GameInfo(p) => p.success(gameInfo)
     case Connect(ref) => ref ! Connected(addPlayer(ref))
-    case Disconnect(player) => removePlayer(player)
+    case Disconnect(ref) => removePlayer(ref)
+    case TargetHit(ref, score) => targetHit(ref, score)
   }
 
 }
 
 case class GameInfo(p: Promise[JsValue])
-case class Connect(ws: ActorRef)
-case class Disconnect(ws: ActorRef)
-case class Connected(color: Player)
+case class Connect(ref: ActorRef)
+case class Disconnect(ref: ActorRef)
+case class Connected(player: Player)
+case class TargetHit(ref: ActorRef, score: Double)

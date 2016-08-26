@@ -21,7 +21,7 @@ sealed trait OutEvent
 object OutEvent {
   case class Pong(msg: String) extends OutEvent
   case class Point(x: Double, y: Double, radius: Double) extends OutEvent
-  case class Bg(r: Double, g: Double, b: Double) extends OutEvent
+  case class Bg(r: Int, g: Int, b: Int) extends OutEvent
 
   implicit val jsonWrites = Writes[OutEvent] {
     case Pong(msg) => Json.obj("type" -> "pong", "msg" -> msg)
