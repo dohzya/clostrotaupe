@@ -15,6 +15,7 @@
     "typings/**/*.d.ts"
   ],
   "files": [
-    "app/app.ts"
+    "app/app.ts",
+    "app/rAF/index.ts"
   ]
 }
