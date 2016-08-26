@@ -28,9 +28,8 @@ class HomeController @Inject() (implicit actorSystem: ActorSystem, materializer:
     )
   }
 
-  val home = {
-    val asset = controllers.Assets.Asset.string2Asset("index.html")
-    controllers.Assets.versioned(path="/public", asset)
+  def home = Action { implicit request =>
+    Ok(views.html.index(routes.HomeController.connect.webSocketURL()))
   }
 
   def info = Action.async {

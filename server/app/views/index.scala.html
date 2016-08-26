@@ -1,20 +1,29 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+@(wsURL: String)
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
+<html>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
+    <head>
+        <meta charset="utf-8">
+        <title>Clostrotaupe — un jeu anxioZen</title>
 
-}
+        <link rel="stylesheet" href="/assets/normalize.css">
+      <link rel="stylesheet" href="/assets/app.css">
+    </head>
+
+    <body>
+
+        <canvas id="gameBoard"></canvas>
+
+        <h1 id="title"><span>Clostrotaupe</span> <small>un jeu anxioZen</small></h1>
+
+        <script>
+            window.clostrotaupe = {
+                wsURL: "@wsURL"
+            };
+        </script>
+
+        <script src="/assets/app.js"></script>
+        <script>require('app');</script>
+    </body>
+
+</html>

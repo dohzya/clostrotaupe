@@ -28,7 +28,7 @@ class Server {
 	}
 
 	private connect() {
-		this.socket = new WebSocket("ws://localhost:9000/ws");
+		this.socket = new WebSocket(window.clostrotaupe.wsURL);
 		this.handleWSEvents( this.socket )
 	}
 
