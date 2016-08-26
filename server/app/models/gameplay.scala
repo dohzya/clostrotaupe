@@ -3,7 +3,14 @@ package models
 import akka.actor._
 
 object Gameplay {
-  def genPoint(): OutEvent.Point = OutEvent.Point(math.random, math.random, math.random / 10)
+  def calibratePoint(point: OutEvent.Point): OutEvent.Point = {
+    val x = if (point.radius - point.x < 0) point.radius else point.x
+    val y = if (point.radius - point.y < 0) point.radius else point.y
+
+    point.copy(x = x, y = y)
+  }
+
+  def genPoint(): OutEvent.Point = calibratePoint(OutEvent.Point(math.random, math.random, math.random / 10))
 
   def checkHit(point: OutEvent.Point, x: Double, y: Double): Option[Double] = {
     val xDiff = point.x - x
@@ -30,10 +37,10 @@ object Gameplay {
   }
 
   def genNearPoint(point: OutEvent.Point): OutEvent.Point =
-    point.copy(
+    calibratePoint(point.copy(
       x = smallVariation(point.x),
       y = smallVariation(point.y),
-      radius = smallVariation(point.radius))
+      radius = smallVariation(point.radius)))
 
   def calculateScoreFromHit(point: OutEvent.Point, hit: Double): Double = scala.math.pow(point.radius, 2.0) - hit
 }
