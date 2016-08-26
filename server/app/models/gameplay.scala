@@ -4,16 +4,15 @@ import akka.actor._
 
 object Gameplay {
   def calibratePoint(point: OutEvent.Point): OutEvent.Point = {
-    val radius = if (point.radius < 0.2) 0.2 else radius
-    val x = if (radius - point.x < 0) radius else point.x
-    val y = if (radius - point.y < 0) radius else point.y
+    val x = if (point.x - point.radius < 0) point.radius else point.x
+    val y = if (point.y - point.radius < 0) point.radius else point.y
 
     point.copy(x = x, y = y)
+    //point
   }
 
   def genPoint(): OutEvent.Point = {
-    val random = math.random / 10
-    val radius = if (random < 0.2) 0.2 else random
+    val radius = math.random / 10
 
    calibratePoint(OutEvent.Point(math.random, math.random, radius))
   }
