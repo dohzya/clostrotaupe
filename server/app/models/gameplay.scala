@@ -7,8 +7,8 @@ object Gameplay {
     val x = if (point.x - point.radius < 0) point.radius else point.x
     val y = if (point.y - point.radius < 0) point.radius else point.y
 
-    point.copy(x = x, y = y)
-    //point
+    //point.copy(x = x, y = y)
+    point
   }
 
   def genPoint(): OutEvent.Point = {
