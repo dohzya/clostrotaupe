@@ -22,12 +22,17 @@ class PlayerActor(ws: ActorRef, game: ActorRef) extends Actor {
   }
 
   def receive = {
+    case Connected(player) =>
+      logger.info(s"Received player info: $player")
+
     case InEvent.Ping(msg) =>
       logger.info(s"Received Ping($msg)")
       ws ! OutEvent.Pong("I received your message: " + msg)
+      ws ! OutEvent.Point(0.33333, 0.33333, 0.5)
+      ws ! OutEvent.Bg(123, 23, 345)
 
-    case Connected(player) =>
-      logger.info(s"Received player info: $player")
+    case InEvent.Click(x, y) =>
+      logger.info(s"Received Click($x, $y)")
 
     case err =>
       logger.warn(s"Received invalid message: $err")
